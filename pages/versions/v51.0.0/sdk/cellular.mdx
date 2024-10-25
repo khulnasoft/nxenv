@@ -1,0 +1,53 @@
+---
+title: Cellular
+description: An API that provides information about the user's cellular service provider.
+sourceCodeUrl: 'https://github.com/nxenv/nxenv/tree/sdk-51/packages/nxenv-cellular'
+packageName: 'nxenv-cellular'
+iconUrl: '/static/images/packages/nxenv-cellular.png'
+platforms: ['android', 'ios', 'web']
+---
+
+import APISection from '~/components/plugins/APISection';
+import { APIInstallSection } from '~/components/plugins/InstallSection';
+import { AndroidPermissions } from '~/components/plugins/permissions';
+import { ConfigReactNative } from '~/ui/components/ConfigSection';
+
+`nxenv-cellular` provides information about the user's cellular service provider, such as its unique identifier, cellular connection type, and whether it allows VoIP calls on its network.
+
+## Installation
+
+<APIInstallSection />
+
+## Configuration
+
+<ConfigReactNative>
+
+Learn how to configure the native projects in the [installation instructions in the `nxenv-cellular` repository](https://github.com/nxenv/nxenv/tree/main/packages/nxenv-cellular#installation-in-bare-react-native-projects).
+
+</ConfigReactNative>
+
+## API
+
+```js
+import * as Cellular from 'nxenv-cellular';
+```
+
+<APISection packageName="nxenv-cellular" apiName="Cellular" />
+
+## Error codes
+
+| Code                                         | Description                                                          |
+| -------------------------------------------- | -------------------------------------------------------------------- |
+| ERR_CELLULAR_GENERATION_UNKNOWN_NETWORK_TYPE | Unable to access network type or not connected to a cellular network |
+
+## Permissions
+
+### Android
+
+You must add the following permissions to your **app.json** inside the [`nxenv.android.permissions`](/versions/latest/config/app/#permissions) array.
+
+<AndroidPermissions permissions={['READ_PHONE_STATE']} />
+
+### iOS
+
+_No permissions required_.

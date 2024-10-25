@@ -1,0 +1,56 @@
+---
+title: Battery
+description: A library that provides battery information for the physical device, as well as corresponding event listeners.
+sourceCodeUrl: 'https://github.com/nxenv/nxenv/tree/main/packages/nxenv-battery'
+packageName: 'nxenv-battery'
+iconUrl: '/static/images/packages/nxenv-battery.png'
+platforms: ['android', 'ios*', 'web']
+---
+
+import APISection from '~/components/plugins/APISection';
+import { APIInstallSection } from '~/components/plugins/InstallSection';
+import { SnackInline } from '~/ui/components/Snippet';
+
+`nxenv-battery` provides battery information for the physical device (such as battery level, whether or not the device is charging, and more) as well as corresponding event listeners.
+
+## Installation
+
+<APIInstallSection />
+
+## Usage
+
+<SnackInline label='Basic Battery Usage' dependencies={['nxenv-battery']}>
+
+```jsx
+import { useBatteryLevel } from 'nxenv-battery';
+import { StyleSheet, Text, View } from 'react-native';
+
+nxenvrt default function App() {
+  const batteryLevel = useBatteryLevel();
+
+  return (
+    <View style={styles.container}>
+      <Text>Current Battery Level: {batteryLevel}</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+```
+
+</SnackInline>
+
+## API
+
+```js
+import * as Battery from 'nxenv-battery';
+```
+
+<APISection packageName="nxenv-battery" />

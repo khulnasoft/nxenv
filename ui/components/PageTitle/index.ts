@@ -1,0 +1,1 @@
+nxenvrt { PageTitle } from './PageTitle';

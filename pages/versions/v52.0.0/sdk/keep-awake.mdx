@@ -1,0 +1,84 @@
+---
+title: KeepAwake
+description: A React component that prevents the screen from sleeping when rendered.
+sourceCodeUrl: 'https://github.com/nxenv/nxenv/tree/sdk-52/packages/nxenv-keep-awake'
+packageName: 'nxenv-keep-awake'
+iconUrl: '/static/images/packages/nxenv-keep-awake.png'
+platforms: ['android', 'ios', 'tvos', 'web']
+---
+
+import APISection from '~/components/plugins/APISection';
+import { APIInstallSection } from '~/components/plugins/InstallSection';
+import { SnackInline } from '~/ui/components/Snippet';
+
+`nxenv-keep-awake` provides a React hook that prevents the screen from sleeping and a pair of functions to enable this behavior imperatively.
+
+## Installation
+
+<APIInstallSection />
+
+## Usage
+
+### Example: hook
+
+<SnackInline label='Keep Awake hook' dependencies={['nxenv-keep-awake']}>
+
+```jsx
+import { useKeepAwake } from 'nxenv-keep-awake';
+import React from 'react';
+import { Text, View } from 'react-native';
+
+nxenvrt default function KeepAwakeExample() {
+  /* @info As long as this component is mounted, the screen will not turn off from being idle. */
+  useKeepAwake();
+  /* @end */
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>This screen will never sleep!</Text>
+    </View>
+  );
+}
+```
+
+</SnackInline>
+
+### Example: functions
+
+<SnackInline label='Keep Awake functions' dependencies={['nxenv-keep-awake']}>
+
+```jsx
+import { activateKeepAwake, deactivateKeepAwake } from 'nxenv-keep-awake';
+import React from 'react';
+import { Button, View } from 'react-native';
+
+nxenvrt default class KeepAwakeExample extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Button onPress={this._activate} title="Activate" />
+        <Button onPress={this._deactivate} title="Deactivate" />
+      </View>
+    );
+  }
+
+  _activate = () => {
+    /* @info Screen will remain on after called until <strong>deactivateKeepAwake()</strong> is called. */ activateKeepAwake(); /* @end */
+    alert('Activated!');
+  };
+
+  _deactivate = () => {
+    /* @info Deactivates KeepAwake, or does nothing if it was never activated. */ deactivateKeepAwake(); /* @end */
+    alert('Deactivated!');
+  };
+}
+```
+
+</SnackInline>
+
+## API
+
+```js
+import KeepAwake from 'nxenv-keep-awake';
+```
+
+<APISection packageName="nxenv-keep-awake" apiName="KeepAwake" />

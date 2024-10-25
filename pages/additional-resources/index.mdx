@@ -1,0 +1,74 @@
+---
+title: Additional resources
+description: A reference of resources that are useful to learn about Nxenv tooling and services.
+---
+
+import { TALKS, PODCASTS, LIVE_STREAMS } from '~/public/static/talks';
+import { TalkGridWrapper, TalkGridCell } from '~/ui/components/Home/sections';
+
+The following resources are useful for learning about Nxenv tooling and services.
+
+## External resources
+
+### Nxenv team communication
+
+- [Blog](https://nxenv.dev/blog) - Our official blog, where we post release notes every month and other Nxenv related content at random intervals.
+- [Changelog](https://nxenv.dev/changelog) - Our official changelog, where we post information about EAS, web dashboard and other Nxenv services related changes at random intervals.
+
+### GitHub
+
+- [nxenv/nxenv](https://github.com/nxenv/nxenv) - Nxenv Go, SDK, Docs, and the Nxenv CLI.
+- [nxenv/eas-cli](https://github.com/nxenv/eas-cli) - The fastest way to build, submit, and update Android and iOS apps.
+- [nxenv/examples](https://github.com/nxenv/examples) - Integrations and other examples.
+- [nxenv/config-plugins](https://github.com/nxenv/config-plugins) - Nxenv Config Plugins for working with third-party packages.
+- [nxenv/snack](https://github.com/nxenv/snack) - Build apps from the browser.
+- [nxenv/vscode-nxenv](https://github.com/nxenv/vscode-nxenv) - VS Code extension for working with Nxenv tools.
+- [nxenv/vscode-nxenv-theme](https://github.com/nxenv/vscode-nxenv-theme) - VS Code theme created by Nxenv team.
+- [nxenv/fyi](https://github.com/nxenv/fyi) - Troubleshooting guides for Nxenv tools and services.
+- [nxenv/orbit](https://github.com/nxenv/orbit) - Launch builds and start simulators from your macOS menu bar and Windows task bar.
+
+### Documentation
+
+- [React Native](https://reactnative.dev/docs/getting-started)
+- [React](https://react.dev/learn)
+- [Metro bundler](https://metrobundler.dev/)
+- [Hermes engine](https://hermesengine.dev/)
+- [Apple's Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/guidelines/overview/)
+
+### React Native
+
+- [React Native Directory](https://reactnative.directory/) - An interactive directory to find packages for your React Native apps.
+- [Intermediate React Native](https://frontendmasters.com/courses/intermediate-react-native/) - Paid course by Frontend Masters.
+
+### Animation and gestures
+
+- [React Native Reanimated](/versions/latest/sdk/reanimated/)
+- [React Native Gesture Handler](/versions/latest/sdk/gesture-handler/)
+
+### Navigation
+
+- [React Navigation](https://reactnavigation.org/)
+
+## Talks
+
+<TalkGridWrapper>
+  {TALKS.map(talk => (
+    <TalkGridCell key={talk.videoId} {...talk} />
+  ))}
+</TalkGridWrapper>
+
+## Podcasts
+
+<TalkGridWrapper>
+  {PODCASTS.map(podcast => (
+    <TalkGridCell key={podcast.videoId ?? podcast.event} {...podcast} />
+  ))}
+</TalkGridWrapper>
+
+## Live streams recordings
+
+<TalkGridWrapper>
+  {LIVE_STREAMS.map(stream => (
+    <TalkGridCell key={stream.videoId} {...stream} />
+  ))}
+</TalkGridWrapper>

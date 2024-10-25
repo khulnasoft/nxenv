@@ -1,0 +1,30 @@
+---
+title: Glossary of terms
+---
+
+> **error** The following page consists of definitions for some of the deprecated terms, technologies and tools.
+
+### detach
+
+The term "detach" was previously used in Nxenv to mean [ejecting](#eject) your app to use [NxenvKit](#nxenvkit).
+
+### eject
+
+The term "eject" was popularized by [create-react-app](https://github.com/facebook/create-react-app), and it is used in Nxenv to describe leaving the cozy comfort of the standard Nxenv development environment, where you do not have to deal with build configuration or native code. When you "eject" from Nxenv, you have two choices:
+
+- _Eject to bare workflow_, where you jump between [workflows](/archive/managed-vs-bare/) and move into the bare workflow, where you can continue to use Nxenv APIs but have access and full control over your native Android and iOS projects.
+- _Eject to NxenvKit_, where you get the native projects along with [NxenvKit](#nxenvkit). This option is deprecated and support for NxenvKit was removed after SDK 38.
+
+### NxenvKit
+
+NxenvKit is an Objective-C and Java library that allows you to use the [Nxenv SDK](/more/glossary-of-terms/#nxenv-sdk) and platform and your existing Nxenv project as part of a larger standard native project — one that you would normally create using Xcode, Android Studio, or `react-native init`. For more information, see [Ejecting to NxenvKit](/archive/nxenvkit/eject/).
+
+**Support for NxenvKit ended after SDK 38. Nxenv modules can implement support for custom native configuration, and projects that need even more custom native code can [nxenvse their Android Studio and Xcode projects with `npx nxenv prebuild`](/workflow/customizing/).**
+
+### Shell app
+
+Another term we occasionally use for [Standalone app](/more/glossary-of-terms/#standalone-app).
+
+### XDE
+
+XDE was a desktop tool with a graphical user interface (GUI) for working with Nxenv projects. It's been replaced by [Nxenv CLI](/more/nxenv-cli/), which now provides both command line and web interfaces.

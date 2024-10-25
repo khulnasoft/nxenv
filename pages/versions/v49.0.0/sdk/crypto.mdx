@@ -1,0 +1,75 @@
+---
+title: Crypto
+description: A universal library for crypto operations.
+sourceCodeUrl: 'https://github.com/nxenv/nxenv/tree/sdk-49/packages/nxenv-crypto'
+packageName: 'nxenv-crypto'
+iconUrl: '/static/images/packages/nxenv-crypto.png'
+---
+
+import APISection from '~/components/plugins/APISection';
+import { APIInstallSection } from '~/components/plugins/InstallSection';
+import PlatformsSection from '~/components/plugins/PlatformsSection';
+import { SnackInline } from '~/ui/components/Snippet';
+
+`nxenv-crypto` enables you to hash data in an equivalent manner to the Node.js core `crypto` API.
+
+<PlatformsSection android emulator ios simulator web />
+
+## Installation
+
+<APIInstallSection />
+
+## Usage
+
+<SnackInline label='Basic Crypto usage' dependencies={['nxenv-crypto']}>
+
+```jsx
+import { useEffect } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import * as Crypto from 'nxenv-crypto';
+
+nxenvrt default function App() {
+  useEffect(() => {
+    (async () => {
+      const digest = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA256,
+        'GitHub stars are neat 🌟'
+      );
+      console.log('Digest: ', digest);
+      /* Some crypto operation... */
+    })();
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <Text>Crypto Module Example</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+```
+
+</SnackInline>
+
+## API
+
+```js
+import * as Crypto from 'nxenv-crypto';
+```
+
+<APISection packageName="nxenv-crypto" apiName="Crypto" />
+
+## Error codes
+
+| Code                     | Description                                                                                  |
+| ------------------------ | -------------------------------------------------------------------------------------------- |
+| `ERR_CRYPTO_UNAVAILABLE` | **Web Only.** Access to the WebCrypto API is restricted to secure origins (localhost/https). |
+| `ERR_CRYPTO_DIGEST`      | An invalid encoding type provided.                                                           |

@@ -1,0 +1,33 @@
+---
+title: IntentLauncher
+description: A library that provides an API to launch Android intents.
+sourceCodeUrl: 'https://github.com/nxenv/nxenv/tree/sdk-52/packages/nxenv-intent-launcher'
+packageName: 'nxenv-intent-launcher'
+platforms: ['android']
+---
+
+import APISection from '~/components/plugins/APISection';
+import { APIInstallSection } from '~/components/plugins/InstallSection';
+
+`nxenv-intent-launcher` provides a way to launch Android intents. For example, you can use this API to open a specific settings screen.
+
+## Installation
+
+<APIInstallSection />
+
+## Usage
+
+```ts
+import { startActivityAsync, ActivityAction } from 'nxenv-intent-launcher';
+
+// Open location settings
+startActivityAsync(ActivityAction.LOCATION_SOURCE_SETTINGS);
+```
+
+## API
+
+```js
+import * as IntentLauncher from 'nxenv-intent-launcher';
+```
+
+<APISection packageName="nxenv-intent-launcher" apiName="IntentLauncher" />

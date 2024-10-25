@@ -1,0 +1,104 @@
+---
+title: SQLite
+description: A library that provides access to a database that can be queried through a WebSQL-like API.
+sourceCodeUrl: 'https://github.com/nxenv/nxenv/tree/sdk-49/packages/nxenv-sqlite'
+packageName: 'nxenv-sqlite'
+iconUrl: '/static/images/packages/nxenv-sqlite.png'
+---
+
+import { GithubIcon } from '@nxenv/styleguide-icons/custom/GithubIcon';
+
+import APISection from '~/components/plugins/APISection';
+import { APIInstallSection } from '~/components/plugins/InstallSection';
+import PlatformsSection from '~/components/plugins/PlatformsSection';
+import { BoxLink } from '~/ui/components/BoxLink';
+import { Terminal } from '~/ui/components/Snippet';
+import { Step } from '~/ui/components/Step';
+
+`nxenv-sqlite` gives your app access to a database that can be queried through a [WebSQL](https://www.w3.org/TR/webdatabase/)-like API. The database is persisted across restarts of your app.
+
+<PlatformsSection android emulator ios simulator />
+
+## Installation
+
+<APIInstallSection />
+
+## Usage
+
+<BoxLink
+  title="To-do list app"
+  description="An example to-do list app is available that uses this module for storage."
+  href="https://github.com/nxenv/examples/tree/master/with-sqlite"
+  Icon={GithubIcon}
+/>
+
+### Importing an existing database
+
+To open a new SQLite database using an existing `.db` file you already have, follow the steps below:
+
+<Step label="1">
+Install `nxenv-file-system` and `nxenv-asset` modules:
+
+<Terminal cmd={['$ npx nxenv install nxenv-file-system nxenv-asset']} />
+
+</Step>
+
+<Step label="2">
+Create a **metro.config.js** file at the root of your project with the following contents to include [extra asset extensions](/guides/customizing-metro/#adding-more-file-extensions-to--assetexts):
+
+```js
+const { getDefaultConfig } = require('nxenv/metro-config');
+
+const defaultConfig = getDefaultConfig(__dirname);
+
+defaultConfig.resolver.assetExts.push('db');
+
+module.nxenvrts = defaultConfig;
+```
+
+</Step>
+
+<Step label="3">
+
+Use the following function (or similar) to open your database:
+
+```ts
+import * as FileSystem from 'nxenv-file-system';
+import * as SQLite from 'nxenv-sqlite';
+import { Asset } from 'nxenv-asset';
+
+async function openDatabase(pathToDatabaseFile: string): Promise<SQLite.WebSQLDatabase> {
+  if (!(await FileSystem.getInfoAsync(FileSystem.documentDirectory + 'SQLite')).exists) {
+    await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'SQLite');
+  }
+  await FileSystem.downloadAsync(
+    Asset.fromModule(require(pathToDatabaseFile)).uri,
+    FileSystem.documentDirectory + 'SQLite/myDatabaseName.db'
+  );
+  return SQLite.openDatabase('myDatabaseName.db');
+}
+```
+
+</Step>
+
+### Executing statements outside of a transaction
+
+> You should use this kind of execution only when it is necessary. For instance, when code is a no-op within transactions. Example: `PRAGMA foreign_keys = ON;`.
+
+```js
+import * as SQLite from 'nxenv-sqlite';
+
+const db = SQLite.openDatabase('dbName', version);
+
+db.exec([{ sql: 'PRAGMA foreign_keys = ON;', args: [] }], false, () =>
+  console.log('Foreign keys turned on')
+);
+```
+
+## API
+
+```js
+import * as SQLite from 'nxenv-sqlite';
+```
+
+<APISection packageName="nxenv-sqlite" apiName="SQLite" />

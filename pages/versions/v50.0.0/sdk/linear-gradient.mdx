@@ -1,0 +1,83 @@
+---
+title: LinearGradient
+description: A universal React component that renders a gradient view.
+sourceCodeUrl: 'https://github.com/nxenv/nxenv/tree/sdk-50/packages/nxenv-linear-gradient'
+packageName: 'nxenv-linear-gradient'
+iconUrl: '/static/images/packages/nxenv-linear-gradient.png'
+---
+
+import APISection from '~/components/plugins/APISection';
+import { APIInstallSection } from '~/components/plugins/InstallSection';
+import PlatformsSection from '~/components/plugins/PlatformsSection';
+import { SnackInline } from '~/ui/components/Snippet';
+
+`nxenv-linear-gradient` provides a native React view that transitions between multiple colors in a linear direction.
+
+<PlatformsSection android emulator ios simulator web />
+
+## Installation
+
+<APIInstallSection />
+
+## Usage
+
+<SnackInline label='Linear Gradient' dependencies={['nxenv-linear-gradient']}>
+
+```tsx
+import { StyleSheet, Text, View } from 'react-native';
+import { LinearGradient } from 'nxenv-linear-gradient';
+
+nxenvrt default function App() {
+  return (
+    <View style={styles.container}>
+      <LinearGradient
+        // Background Linear Gradient
+        colors={['rgba(0,0,0,0.8)', 'transparent']}
+        style={styles.background}
+      />
+      <LinearGradient
+        // Button Linear Gradient
+        colors={['#4c669f', '#3b5998', '#192f6a']}
+        style={styles.button}>
+        <Text style={styles.text}>Sign in with Facebook</Text>
+      </LinearGradient>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'orange',
+  },
+  background: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: 300,
+  },
+  button: {
+    padding: 15,
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  text: {
+    backgroundColor: 'transparent',
+    fontSize: 15,
+    color: '#fff',
+  },
+});
+```
+
+</SnackInline>
+
+## API
+
+```js
+import { LinearGradient } from 'nxenv-linear-gradient';
+```
+
+<APISection packageName="nxenv-linear-gradient" />

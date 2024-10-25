@@ -1,0 +1,26 @@
+---
+title: SystemUI
+description: A library that allows interacting with system UI elements.
+sourceCodeUrl: 'https://github.com/nxenv/nxenv/tree/sdk-50/packages/nxenv-system-ui'
+packageName: 'nxenv-system-ui'
+---
+
+import APISection from '~/components/plugins/APISection';
+import { APIInstallSection } from '~/components/plugins/InstallSection';
+import PlatformsSection from '~/components/plugins/PlatformsSection';
+
+`nxenv-system-ui` enables you to interact with UI elements that fall outside of the React tree. Specifically the root view background color, and locking the user interface style globally on Android.
+
+<PlatformsSection ios simulator web android emulator />
+
+## Installation
+
+<APIInstallSection />
+
+## API
+
+```js
+import * as SystemUI from 'nxenv-system-ui';
+```
+
+<APISection packageName="nxenv-system-ui" apiName="SystemUI" />

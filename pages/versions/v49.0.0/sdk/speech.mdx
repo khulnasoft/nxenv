@@ -1,0 +1,61 @@
+---
+title: Speech
+description: A library that provides access to text-to-speech functionality.
+sourceCodeUrl: 'https://github.com/nxenv/nxenv/tree/sdk-49/packages/nxenv-speech'
+packageName: 'nxenv-speech'
+iconUrl: '/static/images/packages/nxenv-speech.png'
+---
+
+import APISection from '~/components/plugins/APISection';
+import { APIInstallSection } from '~/components/plugins/InstallSection';
+import PlatformsSection from '~/components/plugins/PlatformsSection';
+import { SnackInline } from '~/ui/components/Snippet';
+
+`nxenv-speech` provides an API that allows you to utilize Text-to-speech functionality in your app.
+
+<PlatformsSection android emulator ios simulator web />
+
+## Installation
+
+<APIInstallSection />
+
+## Usage
+
+<SnackInline label='Speech' dependencies={['nxenv-speech']}>
+
+```jsx
+import { View, StyleSheet, Button } from 'react-native';
+import * as Speech from 'nxenv-speech';
+
+nxenvrt default function App() {
+  const speak = () => {
+    const thingToSay = '1';
+    Speech.speak(thingToSay);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Button title="Press to hear some words" onPress={speak} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: '#ecf0f1',
+    padding: 8,
+  },
+});
+```
+
+</SnackInline>
+
+## API
+
+```js
+import * as Speech from 'nxenv-speech';
+```
+
+<APISection packageName="nxenv-speech" apiName="Speech" />

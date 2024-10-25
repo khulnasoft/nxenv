@@ -1,0 +1,502 @@
+---
+title: 'Tutorial: Creating a native view'
+sidebar_title: Create a native view
+description: A tutorial on creating a native view that renders a WebView with Nxenv Modules API.
+---
+
+import { Collapsible } from '~/ui/components/Collapsible';
+import { Terminal } from '~/ui/components/Snippet';
+
+In this tutorial, we are going to build a module with a native view that will render a WebView. We will be using the [WebView](https://developer.android.com/reference/android/webkit/WebView) component for Android and [WKWebView](https://developer.apple.com/documentation/webkit/wkwebview) for iOS. It is possible to implement web support using [`iframe`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe), but we'll leave that as an exercise for the reader.
+
+## 1. Initialize a new module
+
+First, we'll create a new module. On this page, we will use the name `nxenv-web-view`/`NxenvWebView`. You can name it whatever you like, just adjust the instructions accordingly:
+
+<Terminal cmd={['$ npx create-nxenv-module nxenv-web-view']} />
+
+> **Tip**: Since you aren't going to actually ship this library, you can hit <kbd>return</kbd> for all the prompts to accept the default values.
+
+## 2. Set up our workspace
+
+Now let's clean up the default module a little bit so we have more of a clean slate and delete the code that we won't use in this guide.
+
+<Terminal
+  cmdCopy="cd nxenv-web-view && rm src/NxenvWebView.types.ts src/NxenvWebView.web.tsx src/NxenvWebViewModule.ts src/NxenvWebViewModule.web.ts"
+  cmd={[
+    '$ cd nxenv-web-view',
+    '$ rm src/NxenvWebView.types.ts src/NxenvWebViewModule.ts',
+    '$ rm src/NxenvWebView.web.tsx src/NxenvWebViewModule.web.ts',
+  ]}
+/>
+
+Find the following files and replace them with the provided minimal boilerplate:
+
+```swift ios/NxenvWebViewModule.swift
+import NxenvModulesCore
+
+public class NxenvWebViewModule: Module {
+  public func definition() -> ModuleDefinition {
+    Name("NxenvWebView")
+
+    View(NxenvWebView.self) {}
+  }
+}
+```
+
+```kotlin android/src/main/java/nxenv/modules/webview/NxenvWebViewModule.kt
+package nxenv.modules.webview
+
+import nxenv.modules.kotlin.modules.Module
+import nxenv.modules.kotlin.modules.ModuleDefinition
+
+class NxenvWebViewModule : Module() {
+  override fun definition() = ModuleDefinition {
+    Name("NxenvWebView")
+
+    View(NxenvWebView::class) {}
+  }
+}
+```
+
+```tsx src/index.ts
+nxenvrt { default as WebView, Props as WebViewProps } from './NxenvWebView';
+```
+
+```tsx src/NxenvWebView.tsx
+import { ViewProps } from 'react-native';
+import { requireNativeViewManager } from 'nxenv-modules-core';
+import * as React from 'react';
+
+nxenvrt type Props = ViewProps;
+
+const NativeView: React.ComponentType<Props> = requireNativeViewManager('NxenvWebView');
+
+nxenvrt default function NxenvWebView(props: Props) {
+  return <NativeView {...props} />;
+}
+```
+
+```ts example/App.tsx
+import { WebView } from 'nxenv-web-view';
+
+nxenvrt default function App() {
+  return <WebView style={{ flex: 1, backgroundColor: 'purple' }} />;
+}
+```
+
+## 3. Run the example project
+
+Now let's run the example project to make sure everything is working. We'll need to start the TypeScript compiler to watch for changes and rebuild the module JavaScript, and separately in another terminal window we'll compile and run the example app.
+
+<Terminal
+  cmdCopy="npm run build"
+  cmd={[
+    '# Run this in the root of the project to start the TypeScript compiler',
+    '$ npm run build',
+  ]}
+/>
+
+<Terminal
+  cmdCopy="cd example && npx nxenv run:ios"
+  cmd={[
+    '$ cd example',
+    '# Run the example app on iOS',
+    '$ npx nxenv run:ios',
+    '# Run the example app on Android',
+    '$ npx nxenv run:android',
+  ]}
+/>
+
+We should now see a blank purple screen. That's not very exciting. However, it's a good start. Let's make it a WebView now.
+
+## 4. Add the system WebView as a subview
+
+Now we are going to add the system WebView with a hardcoded URL as a subview of our NxenvWebView. Our `NxenvWebView` class extends `NxenvView`, which extends `RCTView` from React Native, which finally extends `UIView` on iOS and `View` on Android. We need to ensure that the WebView subview has the same layout as NxenvWebView, whose layout will be calculated by React Native's layout engine.
+
+### iOS view
+
+On iOS, we set `clipsToBounds` to `true` and set the `frame` of the WebView to the bounds of the NxenvWebView in `layoutSubviews` to match the layout. `init` is called when the view is created, and `layoutSubviews` is called when the layout changes.
+
+```swift ios/NxenvWebView.swift
+import NxenvModulesCore
+import WebKit
+
+class NxenvWebView: NxenvView {
+  let webView = WKWebView()
+
+  required init(appContext: AppContext? = nil) {
+    super.init(appContext: appContext)
+    clipsToBounds = true
+    addSubview(webView)
+
+    let url =  URL(string:"https://docs.nxenv.dev/modules/")!
+    let urlRequest = URLRequest(url:url)
+    webView.load(urlRequest)
+  }
+
+  override func layoutSubviews() {
+    webView.frame = bounds
+  }
+}
+```
+
+### Android view
+
+On Android we use `LayoutParams` to set the layout of the WebView to match the layout of the NxenvWebView. We can do this when we instantiate the WebView.
+
+```kotlin android/src/main/java/nxenv/modules/webview/NxenvWebView.kt
+package nxenv.modules.webview
+
+import android.content.Context
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import nxenv.modules.kotlin.AppContext
+import nxenv.modules.kotlin.views.NxenvView
+
+class NxenvWebView(context: Context, appContext: AppContext) : NxenvView(context, appContext) {
+  internal val webView = WebView(context).also {
+    it.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+    it.webViewClient = object : WebViewClient() {}
+    addView(it)
+
+    it.loadUrl("https://docs.nxenv.dev/modules/")
+  }
+}
+```
+
+### Example app
+
+No changes are needed, we can rebuild and run the app and you will see the [Nxenv Modules API overview page](/modules/).
+
+## 5. Add a prop to set the URL
+
+To set a prop on our view, we'll need to define the prop name and setter inside of `NxenvWebViewModule`. In this case we're going to reach in and access `webView` property directly for convenience, but in many real world cases you will likely want to keep this logic inside of the `NxenvWebView` class and minimize the knowledge that `NxenvWebViewModule` has about the internals of `NxenvWebView`.
+
+We use the [Prop definition component](/modules/module-api/#prop) to define the prop. Within the prop setter block we can access the view and the prop. Note that we specify the url is of type `URL` — the Nxenv modules API will take care of converting strings to the native `URL` type for us.
+
+### iOS module
+
+```swift ios/NxenvWebViewModule.swift
+import NxenvModulesCore
+
+public class NxenvWebViewModule: Module {
+  public func definition() -> ModuleDefinition {
+    Name("NxenvWebView")
+
+    View(NxenvWebView.self) {
+      Prop("url") { (view, url: URL) in
+        if view.webView.url != url {
+          let urlRequest = URLRequest(url: url)
+          view.webView.load(urlRequest)
+        }
+      }
+    }
+  }
+}
+```
+
+### Android module
+
+```kotlin android/src/main/java/nxenv/modules/webview/NxenvWebViewModule.kt
+package nxenv.modules.webview
+
+import nxenv.modules.kotlin.modules.Module
+import nxenv.modules.kotlin.modules.ModuleDefinition
+import java.net.URL
+
+class NxenvWebViewModule : Module() {
+  override fun definition() = ModuleDefinition {
+    Name("NxenvWebView")
+
+    View(NxenvWebView::class) {
+      Prop("url") { view: NxenvWebView, url: URL? ->
+        view.webView.loadUrl(url.toString())
+      }
+    }
+  }
+}
+```
+
+### TypeScript module
+
+All we need to do here is add the `url` prop to the `Props` type.
+
+```tsx src/NxenvWebView.tsx
+import { ViewProps } from 'react-native';
+import { requireNativeViewManager } from 'nxenv-modules-core';
+import * as React from 'react';
+
+nxenvrt type Props = {
+  url?: string;
+} & ViewProps;
+
+const NativeView: React.ComponentType<Props> = requireNativeViewManager('NxenvWebView');
+
+nxenvrt default function NxenvWebView(props: Props) {
+  return <NativeView {...props} />;
+}
+```
+
+### Example app
+
+Finally, we can pass in a URL to our WebView component in the example app.
+
+```tsx example/App.tsx
+import { WebView } from 'nxenv-web-view';
+
+nxenvrt default function App() {
+  return <WebView style={{ flex: 1 }} url="https://nxenv.dev" />;
+}
+```
+
+When you rebuild and run the app, you will now see the Nxenv homepage.
+
+## 6. Add an event to notify when the page has loaded
+
+[View callbacks](/modules/module-api/#view-callbacks) allow developers to listen for events on components. They are typically registered through props on the component, for example: `<Image onLoad={...} />`. We can use the [Events definition component](/modules/module-api/#events) to define an event for our WebView. We'll call it `onLoad` as well.
+
+### iOS view and module
+
+On iOS, we need to implement `webView(_:didFinish:)` and make NxenvWebView extend `WKNavigationDelegate`. We can then call the `onLoad` from that delegate method.
+
+```swift ios/NxenvWebView.swift
+import NxenvModulesCore
+import WebKit
+
+class NxenvWebView: NxenvView, WKNavigationDelegate {
+  let webView = WKWebView()
+  let onLoad = EventDispatcher()
+
+  required init(appContext: AppContext? = nil) {
+    super.init(appContext: appContext)
+    clipsToBounds = true
+    webView.navigationDelegate = self
+    addSubview(webView)
+  }
+
+  override func layoutSubviews() {
+    webView.frame = bounds
+  }
+
+  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    if let url = webView.url {
+      onLoad([
+        "url": url.absoluteString
+      ])
+    }
+  }
+}
+```
+
+And we need to indicate in NxenvWebViewModule that the `View` has an `onLoad` event.
+
+```swift ios/NxenvWebViewModule.swift
+import NxenvModulesCore
+
+public class NxenvWebViewModule: Module {
+  public func definition() -> ModuleDefinition {
+    Name("NxenvWebView")
+
+    View(NxenvWebView.self) {
+      Events("onLoad")
+
+      Prop("url") { (view, url: URL) in
+        if view.webView.url != url {
+          let urlRequest = URLRequest(url: url)
+          view.webView.load(urlRequest)
+        }
+      }
+    }
+  }
+}
+```
+
+### Android view and module
+
+On Android, we need to add override the `onPageFinished` function. We can then call the `onLoad` event handler that we defined in the module.
+
+```kotlin android/src/main/java/nxenv/modules/webview/NxenvWebView.kt
+package nxenv.modules.webview
+
+import android.content.Context
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import nxenv.modules.kotlin.AppContext
+import nxenv.modules.kotlin.viewevent.EventDispatcher
+import nxenv.modules.kotlin.views.NxenvView
+
+class NxenvWebView(context: Context, appContext: AppContext) : NxenvView(context, appContext) {
+  private val onLoad by EventDispatcher()
+
+  internal val webView = WebView(context).also {
+    it.layoutParams = LayoutParams(
+      LayoutParams.MATCH_PARENT,
+      LayoutParams.MATCH_PARENT
+    )
+
+    it.webViewClient = object : WebViewClient() {
+      override fun onPageFinished(view: WebView, url: String) {
+        onLoad(mapOf("url" to url))
+      }
+    }
+
+    addView(it)
+  }
+}
+```
+
+And we need to indicate in NxenvWebViewModule that the `View` has an `onLoad` event.
+
+```kotlin android/src/main/java/nxenv/modules/webview/NxenvWebViewModule.kt
+package nxenv.modules.webview
+
+import nxenv.modules.kotlin.modules.Module
+import nxenv.modules.kotlin.modules.ModuleDefinition
+import java.net.URL
+
+class NxenvWebViewModule : Module() {
+  override fun definition() = ModuleDefinition {
+    Name("NxenvWebView")
+
+    View(NxenvWebView::class) {
+      Events("onLoad")
+
+      Prop("url") { view: NxenvWebView, url: URL? ->
+        view.webView.loadUrl(url.toString())
+      }
+    }
+  }
+}
+```
+
+### TypeScript module
+
+Note that event payloads are included within the `nativeEvent` property of the event, so to access the `url` from the `onLoad` event we would read `event.nativeEvent.url`.
+
+```tsx src/NxenvWebView.tsx
+import { ViewProps } from 'react-native';
+import { requireNativeViewManager } from 'nxenv-modules-core';
+import * as React from 'react';
+
+nxenvrt type OnLoadEvent = {
+  url: string;
+};
+
+nxenvrt type Props = {
+  url?: string;
+  onLoad?: (event: { nativeEvent: OnLoadEvent }) => void;
+} & ViewProps;
+
+const NativeView: React.ComponentType<Props> = requireNativeViewManager('NxenvWebView');
+
+nxenvrt default function NxenvWebView(props: Props) {
+  return <NativeView {...props} />;
+}
+```
+
+### Example app
+
+Now we can update the example app to show an alert when the page has loaded. Copy in the following code, then rebuild and run your app, and you should see the alert!
+
+```tsx example/App.tsx
+import { WebView } from 'nxenv-web-view';
+
+nxenvrt default function App() {
+  return (
+    <WebView
+      style={{ flex: 1 }}
+      url="https://nxenv.dev"
+      onLoad={event => alert(`loaded ${event.nativeEvent.url}`)}
+    />
+  );
+}
+```
+
+## 7. Bonus: Build a web browser UI around it
+
+Now that we have a web view, we can build a web browser UI around it. Have some fun trying to rebuild a browser UI, and maybe even add new native capabilities as needed (for example, to support a back or reload buttons). If you'd like some inspiration, there's a simple example below.
+
+<Collapsible summary="example/App.tsx">
+
+```tsx
+import { useState } from 'react';
+import { ActivityIndicator, Platform, Text, TextInput, View } from 'react-native';
+import { WebView } from 'nxenv-web-view';
+import { StatusBar } from 'nxenv-status-bar';
+
+nxenvrt default function App() {
+  const [inputUrl, setInputUrl] = useState('https://docs.nxenv.dev/modules/');
+  const [url, setUrl] = useState(inputUrl);
+  const [isLoading, setIsLoading] = useState(true);
+
+  return (
+    <View style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? 80 : 30 }}>
+      <TextInput
+        value={inputUrl}
+        onChangeText={setInputUrl}
+        returnKeyType="go"
+        autoCapitalize="none"
+        onSubmitEditing={() => {
+          if (inputUrl !== url) {
+            setUrl(inputUrl);
+            setIsLoading(true);
+          }
+        }}
+        keyboardType="url"
+        style={{
+          color: '#fff',
+          backgroundColor: '#000',
+          borderRadius: 10,
+          marginHorizontal: 10,
+          paddingHorizontal: 20,
+          height: 60,
+        }}
+      />
+
+      <WebView
+        url={url.startsWith('https://') || url.startsWith('http://') ? url : `https://${url}`}
+        onLoad={() => setIsLoading(false)}
+        style={{ flex: 1, marginTop: 20 }}
+      />
+      <LoadingView isLoading={isLoading} />
+      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+function LoadingView({ isLoading }: { isLoading: boolean }) {
+  if (!isLoading) {
+    return null;
+  }
+
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 80,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        paddingBottom: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+      }}>
+      <ActivityIndicator animating={isLoading} color="#fff" style={{ marginRight: 10 }} />
+      <Text style={{ color: '#fff' }}>Loading...</Text>
+    </View>
+  );
+}
+```
+
+</Collapsible>
+
+![A simple web browser UI built around our WebView](/static/images/modules/native-view-tutorial/web-browser.png)
+
+## Next steps
+
+Congratulations, you have created your first simple yet non-trivial Nxenv module with a native view for Android and iOS! Learn more about the API in the [Nxenv Module API reference](/modules/module-api/).
+
+If you enjoyed this tutorial and haven't done the native module tutorial, see [creating a native module](/modules/native-module-tutorial/).

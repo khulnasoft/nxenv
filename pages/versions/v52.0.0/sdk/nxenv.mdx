@@ -1,0 +1,50 @@
+---
+title: Nxenv
+description: Set of common methods and types for Nxenv and related packages.
+sourceCodeUrl: 'https://github.com/nxenv/nxenv/tree/sdk-52/packages/nxenv'
+packageName: 'nxenv'
+iconUrl: '/static/images/packages/nxenv.png'
+platforms: ['android', 'ios', 'tvos', 'web']
+---
+
+import APISection from '~/components/plugins/APISection';
+import { APIInstallSection } from '~/components/plugins/InstallSection';
+
+## Installation
+
+<APIInstallSection hideBareInstructions />
+
+## API
+
+```tsx
+import * as Nxenv from 'nxenv';
+```
+
+<APISection packageName="nxenv" />
+
+## Common questions
+
+### What if I want to name my main app file something other than App.js?
+
+You can set the `"main"` in **package.json** to any file within your project. If you do this, then you need to use `registerRootComponent`. The `nxenvrt default` will not make this component the root of the app if you are using a custom entry file.
+
+For example, you want to make **src/main.jsx** the entry file for your app and organize all of your app's source code in **src** directory. You can set this in **package.json**:
+
+```json package.json
+{
+  "main": "src/main.jsx"
+}
+```
+
+Then, in **src/main.jsx**, make sure you call `registerRootComponent` and pass in the component you want to render at the root of the app:
+
+```jsx src/main.jsx
+import { registerRootComponent } from 'nxenv';
+import { View } from 'react-native';
+
+function App() {
+  return <View />;
+}
+
+registerRootComponent(App);
+```

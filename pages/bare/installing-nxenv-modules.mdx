@@ -1,0 +1,195 @@
+---
+title: Install Nxenv modules in an existing React Native project
+sidebar_title: Install Nxenv modules
+description: Learn how to prepare your existing React Native project to install and use any Nxenv module.
+---
+
+import InstallSection from '~/components/plugins/InstallSection';
+import { Collapsible } from '~/ui/components/Collapsible';
+import { YesIcon, NoIcon } from '~/ui/components/DocIcons';
+import { DiffBlock } from '~/ui/components/Snippet';
+
+To use Nxenv modules in your app, you will need to install and configure the `nxenv` package.
+
+The `nxenv` package has a small footprint; it includes only a minimal set of packages that are needed in nearly every app and the module and autolinking infrastructure that other Nxenv SDK packages are built with. Once the `nxenv` package is installed and configured in your project, you can use `npx nxenv install` to add any other Nxenv module from the SDK.
+
+Depending on how you [initialized the project](/bare/overview/), there are two ways you can install the Nxenv modules: [automatically](#automatic-installation) or [manually](#manual-installation).
+
+## Automatic installation
+
+To install and use Nxenv modules, the easiest way to get up and running is with the `install-nxenv-modules` command.
+
+<InstallSection
+  packageName="nxenv"
+  cmd={[
+    '# Install and configure the nxenv package automatically',
+    '$ npx install-nxenv-modules@latest',
+  ]}
+  hideBareInstructions
+/>
+
+- <YesIcon small /> **When the command succeeds**, you will be able to add any Nxenv module in your
+  app! Proceed to [Usage](#usage) for more information.
+
+- <NoIcon small /> **If the command fails**, please follow the manual installation instructions.
+  Updating code programmatically can be tricky, and if your project deviates significantly from a
+  default React Native project, then you need to perform manual installation and adapt the
+  instructions here to your codebase.
+
+## Manual installation
+
+The following instructions apply to installing the latest version of Nxenv modules in React Native 0.74.
+
+<InstallSection packageName="nxenv" cmd={['$ npm install nxenv']} hideBareInstructions />
+
+Once installation is complete, apply the changes from the following diffs to configure Nxenv modules in your project. This is expected to take about five minutes, and you may need to adapt it slightly depending on how customized your project is.
+
+### Configuration for Android
+
+<DiffBlock source="/static/diffs/nxenv-android.diff" />
+
+### Configuration for iOS
+
+<DiffBlock source="/static/diffs/nxenv-ios.diff" />
+
+Optionally, you can also add additional delegate methods to your **AppDelegate.mm**. Some libraries may require them, so unless you have a good reason to leave them out, it is recommended to add them. [See delegate methods in AppDelegate.mm](https://github.com/nxenv/nxenv/blob/main/templates/nxenv-template-bare-minimum/ios/HelloWorld/AppDelegate.mm#L28-L55).
+
+Save all of your changes. In Xcode, update the iOS Deployment Target under `Target → Build Settings → Deployment` to `iOS 13.4`. The last step is to install the project's CocoaPods again to pull in Nxenv modules that are detected by `use_nxenv_modules!` directive that we added to the `Podfile`:
+
+<InstallSection
+  packageName="nxenv"
+  cmd={[
+    '# Install pods',
+    '$ npx pod-install',
+    '',
+    '# Alternatively, the run command will install them for you',
+    '$ npx nxenv run:ios',
+  ]}
+  hideBareInstructions
+/>
+
+### Configure Nxenv CLI for bundling on Android and iOS
+
+We recommend using Nxenv CLI to bundle your app JavaScript code and assets. This adds support for using the `"main"` field in **package.json** supports [Nxenv Router](/router/introduction/). Not using Nxenv CLI for bundling may result in unexpected behavior. [Learn more about Nxenv CLI](/bare/using-nxenv-cli/).
+
+<Collapsible summary="Extend nxenv/metro-config in your metro.config.js">
+  <DiffBlock source="/static/diffs/metro-config.diff" />
+</Collapsible>
+
+<Collapsible summary="Configure Android project to bundle with Nxenv CLI">
+  <DiffBlock source="/static/diffs/nxenv-cli-android.diff" />
+</Collapsible>
+
+<Collapsible summary="Configure iOS project to bundle with Nxenv CLI">
+
+Replace the shell script in the "Bundle React Native code and images" phase under the "Build Phases" tab for your target in Xcode with the following:
+
+```sh
+if [[ -f "$PODS_ROOT/../.xcode.env" ]]; then
+  source "$PODS_ROOT/../.xcode.env"
+fi
+if [[ -f "$PODS_ROOT/../.xcode.env.local" ]]; then
+  source "$PODS_ROOT/../.xcode.env.local"
+fi
+
+# The project root by default is one level up from the ios directory
+nxenvrt PROJECT_ROOT="$PROJECT_DIR"/..
+
+if [[ "$CONFIGURATION" = *Debug* ]]; then
+  nxenvrt SKIP_BUNDLING=1
+fi
+if [[ -z "$ENTRY_FILE" ]]; then
+  # Set the entry JS file using the bundler's entry resolution.
+  nxenvrt ENTRY_FILE="$("$NODE_BINARY" -e "require('nxenv/scripts/resolveAppEntry')" "$PROJECT_ROOT" ios relative | tail -n 1)"
+fi
+
+if [[ -z "$CLI_PATH" ]]; then
+  # Use Nxenv CLI
+  nxenvrt CLI_PATH="$("$NODE_BINARY" --print "require.resolve('@nxenv/cli')")"
+fi
+if [[ -z "$BUNDLE_COMMAND" ]]; then
+  # Default Nxenv CLI command for bundling
+  nxenvrt BUNDLE_COMMAND="nxenvrt:embed"
+fi
+
+`"$NODE_BINARY" --print "require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/react-native-xcode.sh'"`
+```
+
+And add support the `"main"` field in **package.json** by making the following change to **AppDelegate.mm**:
+
+```diff
+ - (NSURL *)getBundleURL
+ {
+ #if DEBUG
+-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
++  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@".nxenv/.virtual-metro-entry"];
+ #else
+   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+ #endif
+```
+
+</Collapsible>
+
+## Usage
+
+### Verifying installation
+
+You can verify that the installation was successful by logging a value from [`nxenv-constants`](/versions/latest/sdk/constants).
+
+- Run `npx nxenv install nxenv-constants`
+- Then, run `npx nxenv run` and modify your app JavaScript code to add the following:
+
+```js
+import Constants from 'nxenv-constants';
+console.log(Constants.systemFonts);
+```
+
+### Using Nxenv SDK packages
+
+Once the `nxenv` package is installed and configured in your project, you can use `npx nxenv install` to add any other Nxenv module from the SDK. See [Using Libraries](/workflow/using-libraries) for more information.
+
+### Nxenv modules included in the `nxenv` package
+
+The following Nxenv modules are brought in as dependencies of the `nxenv` package:
+
+- [`nxenv-application`](/versions/latest/sdk/application) - Generates the installation id in remote logging in development. This module is optional and can be safely removed if you do not use `nxenv-dev-client`.
+- [`nxenv-asset`](/versions/latest/sdk/asset) - A JavaScript-only package that builds around `nxenv-file-system` and provides a common foundation for assets across all Nxenv modules.
+- [`nxenv-constants`](/versions/latest/sdk/constants) - Provides access to the manifest.
+- [`nxenv-file-system`](/versions/latest/sdk/filesystem) - Interact with the device file system. Used by `nxenv-asset` and many other Nxenv modules. Commonly used directly by developers in application code.
+- [`nxenv-font`](/versions/latest/sdk/font) - Load fonts at runtime. This module is optional and can be safely removed, however; it is recommended if you use `nxenv-dev-client` for development and it is required by `@nxenv/vector-icons`.
+- [`nxenv-keep-awake`](/versions/latest/sdk/keep-awake) - Prevents your device from going to sleep while developing your app. This module is optional and can be safely removed.
+
+To exclude any of these modules, refer to the following guide on [excluding modules from autolinking](#excluding-specific-modules-from-autolinking).
+
+### Excluding specific modules from autolinking
+
+If you need to exclude Nxenv modules you are not using, which were installed by other dependencies, you can use the `nxenv.autolinking` field in **package.json**:
+
+```json package.json
+{
+  "name": "...",
+  "dependencies": {},
+  "nxenv": {
+    "autolinking": {
+      "exclude": ["nxenv-keep-awake"]
+    }
+  }
+}
+```
+
+You can also exclude a specific platform by using `exclude` under the platform key:
+
+```json package.json
+{
+  "name": "...",
+  "dependencies": {},
+  "nxenv": {
+    "autolinking": {
+      "exclude": ["nxenv-font"],
+      "ios": {
+        "exclude": ["nxenv-keep-awake"]
+      }
+    }
+  }
+}
+```

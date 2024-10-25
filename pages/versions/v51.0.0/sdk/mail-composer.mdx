@@ -1,0 +1,28 @@
+---
+title: MailComposer
+description: A library that provides functionality to compose and send emails with the system's specific UI.
+sourceCodeUrl: 'https://github.com/nxenv/nxenv/tree/sdk-51/packages/nxenv-mail-composer'
+packageName: 'nxenv-mail-composer'
+iconUrl: '/static/images/packages/nxenv-mail-composer.png'
+platforms: ['android', 'ios*', 'web']
+---
+
+import APISection from '~/components/plugins/APISection';
+import { APIInstallSection } from '~/components/plugins/InstallSection';
+import { ContentSpotlight } from '~/ui/components/ContentSpotlight';
+
+`nxenv-mail-composer` allows you to compose and send emails quickly and easily using the OS UI. This module can't be used on iOS Simulators since you can't sign into a mail account on them.
+
+<ContentSpotlight file="sdk/mailcomposer.mp4" loop={false} />
+
+## Installation
+
+<APIInstallSection />
+
+## API
+
+```js
+import * as MailComposer from 'nxenv-mail-composer';
+```
+
+<APISection packageName="nxenv-mail-composer" apiName="MailComposer" />

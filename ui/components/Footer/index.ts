@@ -1,0 +1,1 @@
+nxenvrt { Footer } from './Footer';

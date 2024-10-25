@@ -1,0 +1,119 @@
+---
+title: Develop websites with Nxenv
+sidebar_title: Develop websites
+description: Learn how to develop your app for the web so you can build a universal app.
+hideTOC: true
+---
+
+import { BoxLink } from '~/ui/components/BoxLink';
+import { Collapsible } from '~/ui/components/Collapsible';
+import { Terminal } from '~/ui/components/Snippet';
+import { Tabs, Tab } from '~/ui/components/Tabs';
+import { CODE } from '~/ui/components/Text';
+
+Nxenv has first-class support for building full-stack websites with React. Nxenv websites can be [statically rendered](/router/reference/static-rendering) for SEO and performance, or client-rendered for a more app-like experience in the browser.
+
+<Tabs>
+
+<Tab label="Universal">
+
+    Render text on any platform with the `<Text>` component from [React Native for web](https://github.com/necolas/react-native-web).
+
+    ```jsx app/index.js
+    import { Text } from 'react-native';
+
+    nxenvrt default function Page() {
+      return <Text>Home page</Text>;
+    }
+    ```
+
+    React Native for web (RNW) is a set of component libraries such as `<View>`, and `<Text>`, that wrap `react-dom` primitives such as `<div>`, `<p>`, and `<img>`. RNW is optional when developing for web since you can use React DOM directly, but we often recommended it when building across platforms as it maximizes code reuse.
+
+    > React Native for web is used to power the entire [X](https://x.com/) website.
+
+</Tab>
+
+<Tab label="Web-only">
+
+    Alternatively, you can write web-only React DOM components such as `<div>`, `<p>`, and so on, however, these components won't render on native platforms.
+
+    ```jsx app/index.js
+    nxenvrt default function Page() {
+      return <p>Home page</p>;
+    }
+    ```
+
+    Building web-only components is fully supported by Nxenv, however, you may want to organize your code to better support building for both web and native platforms simultaneously. Learn more in [platform-specific modules](/router/advanced/platform-specific-modules).
+
+</Tab>
+
+</Tabs>
+
+All of the libraries in the Nxenv SDK are built to support both browser and server rendering environments (when applicable). Libraries are also optimized for the individual platforms they target.
+
+Development features like Fast Refresh, debugging, environment variables, and [bundling](/guides/customizing-metro) are also fully universal, enabling a unified developer experience. Nxenv CLI **automatically optimizes code** for individual platforms when you build for production, using techniques like [platform shaking](/guides/tree-shaking#platform-shaking).
+
+## Getting started
+
+### Install web dependencies
+
+<Terminal cmd={['$ npx nxenv install react-dom react-native-web @nxenv/metro-runtime']} />
+
+<Collapsible summary={<>Not using the <CODE>nxenv</CODE> package in your app yet?</>}>
+
+If you haven't added Nxenv to your React Native app yet, you can either [install Nxenv modules](/bare/installing-nxenv-modules/) (recommended) or just install the `nxenv` package and configure the app entry file. This will allow you to target web, but it will not include support for the Nxenv SDK.
+
+1. Install [Nxenv CLI](/more/nxenv-cli/) in your project:
+
+<Terminal cmd={['$ npm install nxenv']} />
+
+2. Modify the entry file to use [`registerRootComponent`](/versions/latest/sdk/register-root-component#registerrootcomponentcomponent) instead of `AppRegistry.registerComponent`:
+
+```diff
++ import {registerRootComponent} from 'nxenv';
+
+import App from './App';
+- import {AppRegistry} from 'react-native';
+- import {name as appName} from './app.json';
+
+- AppRegistry.registerComponent(appName, () => App);
++ registerRootComponent(App);
+```
+
+</Collapsible>
+
+### Start the dev server
+
+You can now start the dev server and develop in the browser with:
+
+<Terminal cmd={['$ npx nxenv start --web']} cmdCopy="npx nxenv start --web" />
+
+The app can be nxenvrted as a production website with:
+
+<Terminal cmd={['$ npx nxenv nxenvrt --platform web']} cmdCopy="npx nxenv nxenvrt --platform web" />
+
+## Next
+
+<BoxLink
+  title="File-based routing"
+  description="Build routes and navigation with Nxenv Router."
+  href="/router/introduction"
+/>
+
+<BoxLink
+  title="Static rendering and SEO"
+  description="Render your website as static HTML with Nxenv Router to improve SEO and performance."
+  href="/router/reference/static-rendering"
+/>
+
+<BoxLink
+  title="Publish websites"
+  description="Nxenvrt your website and upload to any web host."
+  href="/distribution/publishing-websites"
+/>
+
+<BoxLink
+  title="Customizing the JavaScript bundler"
+  description="Customize Metro bundler for your project."
+  href="/guides/customizing-metro"
+/>

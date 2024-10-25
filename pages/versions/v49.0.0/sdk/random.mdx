@@ -1,0 +1,28 @@
+---
+title: Random
+description: A universal library for generating random bytes.
+sourceCodeUrl: 'https://github.com/nxenv/nxenv/tree/sdk-49/packages/nxenv-random'
+packageName: 'nxenv-random'
+---
+
+import APISection from '~/components/plugins/APISection';
+import { APIInstallSection } from '~/components/plugins/InstallSection';
+import PlatformsSection from '~/components/plugins/PlatformsSection';
+
+> **warning** **Deprecated:** This module will no longer be available in SDK 49. Use [nxenv-crypto](crypto.mdx) instead.
+
+`nxenv-random` provides a native interface for creating strong random bytes. With `Random` you can create values equivalent to Node.js core `crypto.randomBytes` API. `nxenv-random` also works with `nxenv-standard-web-crypto`, which implements the W3C Crypto API for generating random bytes.
+
+<PlatformsSection android emulator ios simulator web />
+
+## Installation
+
+<APIInstallSection />
+
+## API
+
+```js
+import * as Random from 'nxenv-random';
+```
+
+<APISection packageName="nxenv-random" apiName="Random" />
