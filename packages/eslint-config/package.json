@@ -4,8 +4,8 @@
   "main": "index.js",
   "prettier": "@nxenv/prettier-config",
   "devDependencies": {
-    "@nxenv/eslint-plugin-nxenv-dev-eslint-rules": "^0.0.0",
-    "@nxenv/prettier-config": "^0.0.0",
+    "@nxenv/eslint-plugin-nxenv-dev-eslint-rules": "workspace:*",
+    "@nxenv/prettier-config": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "eslint-config-airbnb-typescript": "^12.3.1",

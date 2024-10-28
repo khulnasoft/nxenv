@@ -12,7 +12,7 @@
   },
   "prettier": "@nxenv/prettier-config",
   "devDependencies": {
-    "@nxenv/prettier-config": "^0.0.0"
+    "@nxenv/prettier-config": "workspace:*"
   },
   "files": [
     "lib"
