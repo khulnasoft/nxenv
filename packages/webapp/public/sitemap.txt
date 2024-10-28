@@ -1,0 +1,7 @@
+https://app.nxenv.khulnasoft.com/sources
+https://app.nxenv.khulnasoft.com/squads
+https://app.nxenv.khulnasoft.com/tags
+https://app.nxenv.khulnasoft.com/devcard
+https://app.nxenv.khulnasoft.com/roast
+https://app.nxenv.khulnasoft.com/users
+https://app.nxenv.khulnasoft.com/posts

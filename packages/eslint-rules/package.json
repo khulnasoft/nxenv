@@ -1,0 +1,30 @@
+{
+  "name": "@nxenv/eslint-plugin-nxenv-dev-eslint-rules",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "KhulnaSoft DevOps <info@khulnasoft.com>",
+  "homepage": "https://github.com/khulnasoft/nxenv#readme",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "prettier": "@nxenv/prettier-config",
+  "devDependencies": {
+    "@nxenv/prettier-config": "^0.0.0"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khulnasoft/nxenv.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/khulnasoft/nxenv/issues"
+  }
+}

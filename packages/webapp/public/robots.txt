@@ -1,0 +1,5 @@
+Sitemap: https://app.nxenv.khulnasoft.com/sitemap.txt
+User-agent: *
+Disallow: /join
+Disallow: /error
+Disallow: /callback

@@ -1,0 +1,70 @@
+{
+  "manifest_version": 3,
+  "__firefox__manifest_version": 2,
+  "version": "0.0.0",
+  "name": "nxenv.khulnasoft.com | The homepage developers deserve",
+  "short_name": "nxenv.khulnasoft.com",
+  "description": "Get one personalized feed for all the knowledge you need as a developer.",
+  "homepage_url": "https://nxenv.khulnasoft.com",
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "__prod__permissions": ["scripting"],
+  "__prod|chrome|opera|edge__host_permissions": [
+    "https://nxenv.khulnasoft.com/",
+    "https://*.nxenv.khulnasoft.com/",
+    "https://dailynow.co/",
+    "https://*.dailynow.co/"
+  ],
+  "__firefox|prod__permissions": [
+    "https://nxenv.khulnasoft.com/",
+    "https://*.nxenv.khulnasoft.com/",
+    "https://dailynow.co/",
+    "https://*.dailynow.co/"
+  ],
+  "__dev__permissions": ["storage", "scripting"],
+  "__dev__host_permissions": ["http://localhost/", "http://*.local.com/"],
+  "__firefox|dev__permissions": ["storage", "http://localhost/", "http://*.local.com/"],
+  "optional_permissions": ["topSites"],
+  "__firefox__optional_permissions": ["topSites", "*://*/*"],
+  "__chrome|opera|edge__optional_host_permissions": [ "*://*/*"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "__firefox__content_security_policy": "script-src 'self'; object-src 'self';",
+  "__chrome|opera|edge__action": {
+    "default_icon": {
+      "16": "icons/action_16.png",
+      "32": "icons/action_32.png"
+    }
+  },
+  "__firefox__browser_action": {
+    "default_icon": {
+      "16": "icons/action_16.png",
+      "32": "icons/action_32.png"
+    }
+  },
+  "background": {
+    "__chrome|opera|edge__service_worker": "js/background.bundle.js",
+    "__firefox__scripts": ["js/background.bundle.js"]
+  },
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["index.html", "companion.html", "js/companion.bundle.js", "css/companion.css"],
+      "matches": ["*://*/*"]
+    }
+  ],
+  "__firefox__web_accessible_resources":  ["index.html", "companion.html", "js/companion.bundle.js", "css/companion.css"],
+  "__firefox__browser_specific_settings": {
+    "gecko": {
+      "strict_min_version": "58.0"
+    }
+  },
+
+  "__chrome__offline_enabled": true
+}

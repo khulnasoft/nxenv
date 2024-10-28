@@ -1,0 +1,32 @@
+{
+  "name": "@nxenv/eslint-config",
+  "version": "0.0.0",
+  "main": "index.js",
+  "prettier": "@nxenv/prettier-config",
+  "devDependencies": {
+    "@nxenv/eslint-plugin-nxenv-dev-eslint-rules": "^0.0.0",
+    "@nxenv/prettier-config": "^0.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^8.10.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-prettier": "^3.4.1",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-tailwindcss": "^3.17.5",
+    "eslint-plugin-unused-imports": "^3.2.0",
+    "typescript": "4.9.5"
+  },
+  "peerDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-jest-dom": "^3.8.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.23.1",
+    "eslint-plugin-testing-library": "^3.10.2",
+    "typescript": "4.9.5"
+  }
+}
